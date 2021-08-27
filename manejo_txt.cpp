@@ -7,6 +7,7 @@ manejo_txt::manejo_txt()
 
 string manejo_txt::Str_Bin(string contenido)
 {
+
     int tamCad = contenido.length();
 
     string cadBinario;
