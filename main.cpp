@@ -35,12 +35,13 @@ int main()
     cout<<"2.Salir"<<endl;
     cout<<">>";
     cin>>opcion;
-
+    cout<<"////////////////////////////////////////////////////////////"<<endl;
     switch(opcion){
         case 0:
             cout<<"por favor introduzca la contraseña:"<<endl;
             cout<<">>";
             cin>>claveAdmin;
+            cout<<"////////////////////////////////////////////////////////////"<<endl;
 
             if (Usuari.confirAdmin(claveAdmin)){
                 int opc=0;
@@ -50,6 +51,7 @@ int main()
                 cout<<"1.salir"<<endl;
                 cout << " >> ";
                 cin>>opc;
+                cout<<"////////////////////////////////////////////////////////////"<<endl;
 
                 if (opc ==0){
                     archiv.setArchivo(Usuari.NuevoUsu());
@@ -72,7 +74,7 @@ int main()
             cout<<"contrasena: ";
             cin>>contrasena;
             claveUsuario=documento+' '+contrasena;
-
+            cout<<"////////////////////////////////////////////////////////////"<<endl;
 
             if (Usuari.confirUsu(claveUsuario)){
                 cout<<"Bienvenido!!"<<endl;
@@ -83,6 +85,7 @@ int main()
                 cout<<">>";
                 cin>>opcion2;
 
+                cout<<"////////////////////////////////////////////////////////////"<<endl;
 
                 switch(opcion2){
 
@@ -98,13 +101,14 @@ int main()
                             cout<<"la opcion no es permitida"<<endl;
                             cout<<"¡Vuelva pronto!";
                         }
+                        cout<<"////////////////////////////////////////////////////////////"<<endl;
                         break;
                     case 1:
                         cout<<"ingrese la cantidad de dinero a retirar:"<<endl;
                         cout<<">>";
                         cin>>dinero;
 
-
+                        cout<<"////////////////////////////////////////////////////////////"<<endl;
                         if (Usuari.Dinero() > (1000+dinero)){
                             Usuari.setCash((Usuari.getCash())-dinero);
                             cout<<"Gracias por usar el cajero, vuelva pronto"<<endl;
