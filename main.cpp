@@ -3,30 +3,77 @@
 
 using namespace std;
 
-string LectuArchi();
+string LectuArchi(string txt);
 bool confirAdmin( string claveAdmin, int longitud, string archivo);
 int confirUsu(int longitud, string claveUsuario, string archivo);
-void escribir( string contenido);
+
+void escribir( string contenido,string txt);
 int Dinero(int longitud, string archivo, int A);
+string CambioDinero(int longitud,string archivo,int A,int cash);
+void codi_escritura(string archivo,int longitud);
 
 
-
+string Str_Bin(string contenido);
+string codificar(int n, string archiEnt);
+string decodificar(int n, string CadBinario);
+string Bin_Str(string CadCode);
+string Bin_lectura(string txt);
 
 int main()
 {
 
-    string claveAdmin = "1234";
-    unsigned int documento =10004, opcion=1;
-    string claveUsuario = "10004 2002", usuNuev="12345 adcf 46000";
+    string B;
+
+    string claveUsuario = "10003 2003" ;
     unsigned int dinero = 5000;
 
-
-    string archivo=LectuArchi();
+    string txt="../Lab3_cajero/BD/BaseDatos.txt";
+    string archivo=LectuArchi(txt),archi2=LectuArchi("../Lab3_cajero/BD/pruebaBin.txt");
     int longitud =archivo.length(),A, cash;
 
-    bool confirAd = confirAdmin(claveAdmin,longitud,archivo);
 
-    string copiaArchi;
+
+    cout<<"Bienvenido!!"<<endl;
+    cout<<"introduzca el numero que le aparece en pantalla para ingresar: "<<endl;
+    cout<<"0.Administrador"<<endl;
+    cout<<"1.Usuario"<<endl;
+    cout<<"2.Salir"<<endl;
+    cout<<">>";
+    unsigned int opcion=1;
+
+    switch(opcion){
+        case 0:
+
+            cout<<"por favor introduzca la contraseña:"<<endl;
+            cout<<">>";
+            string claveAdmin = "1234";
+            bool confirAd = confirAdmin(claveAdmin,longitud,archivo);
+
+            if (confirAd ==true){
+                int opc=0;
+                cout<<"Bienvenido administrador"<<endl;
+                cout<<"Ingrese el numero correspondiente: "<<endl;
+                cout<<"0.ingresar nuevo usuario"<<endl;
+                cout<<"1.salir"<<endl;
+                cout<<">>";
+                if (opc ==0){
+
+
+                }
+            }
+
+
+    break;
+    }
+
+
+
+
+
+
+
+
+
 /*
     if (confirAd == true){
         archivo+='\n';
@@ -42,6 +89,10 @@ int main()
 
     cash=Dinero(longitud,archivo,A);
 
+
+
+
+
     //consulta de saldo
 
     switch(opcion){
@@ -49,26 +100,12 @@ int main()
             if (cash >1000){
                 cout<<"su saldo es de "<<cash<<endl;
                 cash-=1000;
-                int contador=0,contaEsp=0;
-                for (int i =0;i< longitud;i++){
-                    if (archivo[i] == '\n' ){
-                        contador++;
-                    }
-                    if (contador==A and archivo[i]==' '){
-                        contaEsp++;
-                    }
-                    if(contador==A and contaEsp==2){
-                        copiaArchi+=' ';
-                        copiaArchi+=to_string(cash);
-                        contaEsp++;
+                B=CambioDinero(longitud,archivo,A,cash);
+                codi_escritura(B,longitud);
 
-                    }
-                    else if (contador==A and contaEsp==3){
-                    }
-                    else{
-                        copiaArchi+=archivo[i];
-                    }
-                }
+
+
+
             }
             break;
         case 2:
@@ -76,6 +113,7 @@ int main()
                 cash-=dinero;
                 cout<<"Gracias por usar el cajero, vuelva pronto"<<endl;
                 cash-=1000;
+                B=CambioDinero(longitud,archivo,A,cash);
             }
 
 
@@ -91,14 +129,150 @@ int main()
     return 0;
 }
 
-string LectuArchi(){
+void NuevoUsu(){
+    cout<<"ingreselo de la siguente forma:"<<endl;
+    cout<<"(documento)(espacio)(constraseña)(espacio)(dinero)"<<endl;
+    cout<<">>";
+    string usuNuev="12345 adcf 46000";
+    archivo+='\n';
+    archivo+=usuNuev;
+    codi_escritura(archivo)
+}
+
+string decodificar(int n, string CadBinario)
+{
+
+    string CadCode;
+    string CadTxt;
+
+
+
+    int Especial=0, PartSup;
+
+    int Longitud=CadBinario.length();
+
+    for(int elem = 0; elem<Longitud;elem++){
+        CadCode += ' ';
+    }
+
+    if (Longitud%n != 0){
+        Especial++;
+    }
+    PartSup = Especial == 1 ? (Longitud/n)+1 : Longitud/n;
+    for(int NLego = 0 ;NLego < PartSup; NLego ++){
+        Especial=Longitud%n;
+        if(NLego==Longitud/n){
+            CadCode[(NLego*n + Especial)-1] = CadBinario[NLego*n];
+            for (int i = n*NLego ;i < (NLego*n + Especial-1) ; i++){
+                CadCode[i]=CadBinario[i+1];
+            }
+        }
+        else{
+            CadCode[n*(NLego+1)-1]=CadBinario[NLego*n];
+            for (int i = n*NLego ;i < (n*(NLego+1)-1); i++){
+                CadCode[i]=CadBinario[i+1];
+            }
+
+        }
+    }
+
+    CadTxt=Bin_Str(CadCode);
+    return CadTxt;
+
+}
+
+
+string Bin_Str(string CadCode)
+{
+  int tamCad= CadCode.length(),multiplicador=1;
+  int decimal=0;
+
+  string CadTxt;
+
+  for(int cont=0;cont<tamCad/8;cont++){
+      multiplicador=1;
+      decimal=0;
+        for(int elem=0, palBin=(cont + 1)*8-1 ; elem<8 ; elem++,palBin--){
+            if (CadCode[palBin] == '1'){
+                decimal += multiplicador;
+            }
+            multiplicador = multiplicador*2;
+        }
+        CadTxt+=decimal;
+  }
+  return CadTxt;
+}
+
+
+string codificar(int n, string CadText)
+{
+    string CadBinario;
+    string CadCode;
+
+
+    CadBinario = Str_Bin(CadText);
+
+    int Especial=0, PartSup;
+
+    int Longitud=CadBinario.length();
+
+
+    for(int elem = 0; elem<Longitud;elem++){
+        CadCode += ' ';
+    }
+
+    if (Longitud%n != 0){
+        Especial++;
+    }
+    PartSup = Especial == 1 ? (Longitud/n)+1 : Longitud/n;
+    for(int NLego = 0 ;NLego < PartSup; NLego ++){
+        Especial=Longitud%n;
+        if(NLego==Longitud/n){
+            CadCode[NLego*n] = CadBinario[(NLego*n + Especial)-1];
+            for (int i = n*NLego ;i < (NLego*n + Especial-1) ; i++){
+                CadCode[i+1]=CadBinario[i];
+            }
+        }
+        else{
+            CadCode[NLego*n]=CadBinario[n*(NLego+1)-1];
+            for (int i = n*NLego ;i < (n*(NLego+1)-1); i++){
+                CadCode[i+1]=CadBinario[i];
+            }
+        }
+    }
+    return CadCode;
+
+}
+
+
+string Str_Bin(string contenido)
+{
+    int tamCad = contenido.length();
+
+    string cadBinario;
+    for(int i=0;i < tamCad*8;i++){
+        cadBinario += ' ';
+    }
+    int carac=0;
+    for(int cont=0;cont<tamCad;cont++){
+        carac = (int)contenido[cont];
+            for(int elem=0, palBin=(cont + 1)*8-1 ; elem<8 ; elem++,palBin--){
+                cadBinario[palBin]=(char)(carac%2+48);
+                carac/=2;
+            }
+    }
+    return cadBinario;
+}
+
+
+string LectuArchi(string txt){
    string data;
 
    // Abre el archivo en modo lectura
    ifstream infile;
 
    // Se pone de manera explicita la ruta relativa donde se encuentra el archivo
-   infile.open("../Lab3_cajero/BD/BaseDatos.txt");
+   infile.open(txt);
 
    // Se comprueba si el archivo fue abierto exitosamente
    if (!infile.is_open())
@@ -131,11 +305,11 @@ string LectuArchi(){
    return data;
 }
 
-void escribir(string contenido)
+void escribir(string contenido,string txt)
 {
     ofstream archi;
 
-    archi.open("../Lab3_cajero/BD/BaseDatos.txt");
+    archi.open(txt);
 
     if (!archi.is_open())
        {
@@ -222,5 +396,81 @@ int Dinero(int longitud,string archivo,int A){
     return cash;
 }
 
+string CambioDinero(int longitud,string archivo,int A,int cash){
+    string copiaArchi;
+    int contador=0,contaEsp=0;
+    for (int i =0;i< longitud;i++){
+        if (archivo[i] == '\n' ){
+            contador++;
+        }
+        if (contador==A and archivo[i]==' '){
+            contaEsp++;
+        }
+        if(contador==A and contaEsp==2){
+            copiaArchi+=' ';
+            copiaArchi+=to_string(cash);
+            contaEsp++;
+
+        }
+        else if (contador==A and contaEsp==3){
+        }
+        else{
+            copiaArchi+=archivo[i];
+        }
+    }
+    return copiaArchi;
+}
+
+void codi_escritura(string archivo,int longitud){
+    string copiaArch,C,txtBin;
+    for(int i=0;i<longitud;i++){
+        if (archivo[i]=='\n' or archivo[i]==' '){
+            C=codificar(4,copiaArch);
+            txtBin+=C;
+            if (archivo[i]=='\n'){
+                txtBin+='\n';
+            }
+            else{
+                txtBin+=' ';
+            }
+            copiaArch="";
+        }
+        else {
+            copiaArch+=archivo[i];
+
+        }
+    }
+    C=codificar(4,copiaArch);
+    txtBin+=C;
+    escribir(txtBin,"../Lab3_cajero/BD/pruebaBin.txt");
+}
+
+string Bin_lectura(string txt){
 
 
+    string archi2 = LectuArchi(txt);
+    string copiaArch,C,txtBin;
+    int longitud2 = archi2.length();
+
+
+    for(int i=0;i<longitud2;i++){
+        if (archi2[i]=='\n' or archi2[i]==' '){
+            C=decodificar(4,copiaArch);
+            txtBin+=C;
+            if (archi2[i]=='\n'){
+                txtBin+='\n';
+            }
+            else{
+                txtBin+=' ';
+            }
+            copiaArch="";
+        }
+        else {
+            copiaArch+=archi2[i];
+
+        }
+    }
+    C=decodificar(4,copiaArch);
+    txtBin+=C;
+    return txtBin;
+}
